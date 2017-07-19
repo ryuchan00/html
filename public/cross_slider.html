@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>slide</title>
+    <style>
+        .slider .slide-x {
+            width: 315px;
+            height: 360px;
+            float: left;
+            margin: 0;
+            padding: 0;
+        }
+
+        .slider .slide-set {
+            position: absolute;
+            }
+
+        .slider {
+            width: 315px;
+            height: 360px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #ddd;
+            border-bottom: 3px solid #ddd;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="wrap">
+    <div class="slider">
+        <div class="slide-set">
+
+            <div class="slide-y">
+                <div class="slide-x">
+                    <h1>slide1-1</h1>
+                </div>
+
+                <div class="slide-x">
+                    <h1>slide1-2</h1>
+                </div>
+
+                <div class="slide-x">
+                    <h1>slide1-3</h1>
+                </div>
+            </div>
+
+            <div class="slide-y">
+                <div class="slide-x">
+                    <h1>slide2-1</h1>
+                </div>
+
+                <div class="slide-x">
+                    <h1>slide2-2</h1>
+                </div>
+
+                <div class="slide-x">
+                    <h1>slide2-3</h1>
+                </div>
+            </div>
+
+            <div class="slide-y">
+                <div class="slide-x">
+                    <h1>slide3-1</h1>
+                </div>
+
+                <div class="slide-x">
+                    <h1>slide3-2</h1>
+                </div>
+
+                <div class="slide-x">
+                    <h1>slide3-3</h1>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<button class="slider-left">左へ</button>
+<button class="slider-right">右へ</button>
+<button class="slider-above">上へ</button>
+<button class="slider-below">下へ</button>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        "use strict";
+
+        var slideWidth = $('.slide-x').outerWidth(); // .slide-xの幅を取得して代入
+        var slideNumX = $('.slide-x').length;  // .slide-xの数を取得して代入
+        var slideNumY = $('.slide-y').length;  // .slide-yの数を取得して代入
+        slideNumX = slideNumX / slideNumY;
+        var slideSetWidth = slideWidth * slideNumX; // .slideの幅×数で求めた値を代入
+        $('.slide-set').css('width', slideSetWidth); // .slideSetのスタイルシートにwidth: slideSetWidthを指定
+
+        var slideHeight = $('.slide-x').outerHeight(); // .slide-yの幅を取得して代入
+        var slideSetHeight = slideHeight * slideNumY; // .slide-yの長さ×数で求めた値を代入
+        $('.slide-set').css('height', slideSetHeight); // .slideSetのスタイルシートにwidth: slideSetHeightを指定
+
+        var slideCurrentX = 0; // 現在地を示す変数
+        var slideCurrentY = 0; // 現在地を示す変数Y軸
+
+        // アニメーションを実行する独自関数
+        function slidingX() {
+            // slideCurrentXが0以下だったら
+            if (slideCurrentX < 0) {
+                slideCurrentX = slideNumX - 1;
+                // 一番左上端か判定
+                if (slideCurrentY === 0) {
+                    slideCurrentY = slideNumY - 1;
+                } else {
+                    slideCurrentY--;
+                }
+                slidingY();
+
+                // slideCurrentXがslideNumXを超えたら
+            } else if (slideCurrentX > slideNumX - 1) { // slideCUrrent >= slideNumXでも可
+                slideCurrentX = 0;
+                // 一番右下端か判定
+                if (slideCurrentY === slideNumY - 1) {
+                    slideCurrentY = 0;
+                } else {
+                    slideCurrentY++;
+                }
+                slidingY();
+            }
+
+            $('.slide-set').stop(false, true).animate({
+                left: slideCurrentX * -slideWidth
+            }, 500);
+        }
+
+        function slidingY() {
+            // slideCurrentYが0以下だったら
+            if (slideCurrentY < 0) {
+                slideCurrentY = slideNumY - 1;
+                // 一番左上端か判定
+                if (slideCurrentX === 0) {
+                    slideCurrentX = slideNumX - 1;
+                } else {
+                    slideCurrentX--;
+                }
+                slidingX();
+
+                // slideCurrentYがslideNumYを超えたら
+            } else if (slideCurrentY > slideNumY - 1) { // slideCUrrent >= slideNumでも可
+                slideCurrentY = 0;
+                // 一番右下端か判定
+                if (slideCurrentX === slideNumX - 1) {
+                    slideCurrentX = 0;
+                } else {
+                    slideCurrentX++;
+                }
+                slidingX();
+            }
+
+            $('.slide-set').stop(false, true).animate({
+                top: slideCurrentY * -slideHeight
+            }, 500);
+        };
+
+        // 左へボタンが押されたとき
+        $('.slider-left').click(function () {
+            slideCurrentX--;
+            slidingX();
+        });
+
+        // 右へボタンが押されたとき
+        $('.slider-right').click(function () {
+            slideCurrentX++;
+            slidingX();
+        });
+
+        // 下へボタンが押されたとき
+        $('.slider-below').click(function () {
+            slideCurrentY++;
+            slidingY();
+        });
+
+        // 上へボタンが押されたとき
+        $('.slider-above').click(function () {
+            slideCurrentY--;
+            slidingY();
+        });
+    }());
+</script>
+</body>
+</html>
